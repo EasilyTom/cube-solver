@@ -119,7 +119,6 @@ class RubiksCube:
 
     def check_if_solved():
         """Check if the cube is in a solved state"""
-        colours = ['w', 'y', 'r', 'o', 'b', 'g']
         for x in range(0,3):
             for y in range (0,3):
                 if (
