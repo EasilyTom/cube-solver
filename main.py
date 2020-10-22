@@ -109,12 +109,14 @@ def daisy():
             if white_edge_locations[side_being_processed][0] != 'yellow':
                 # We need to move it to an empty location in yellow
                 face, y, x = white_edge_locations[side_being_processed]
-                print('t2')
                 if white_edge_locations[side_being_processed][0] != 'white':
+
+
+
                     if y == 0 and x == 1:
+                        print('tried to move a top')
                         # Top of the face
                         while 1:
-                            print(face)
                             if occupied_yellows[face] == False:
                                 #FRUR'FF
                                 front = face_names.index(face)
@@ -138,12 +140,11 @@ def daisy():
                                 cube.turn_side_clockwise(face)
                                 cube.turn_side_clockwise(face)
                                 occupied_yellows[face] = True
-                                print('moved a side')
                                 white_edge_locations = find('w', 'edge')
+                                print('moved a top')
                                 break
                             else:
                                 cube.turn_side_anti_clockwise('white')
-                                #need to change face
                                 front = face_names.index(face)
     
                                 if front == 3:
@@ -153,57 +154,102 @@ def daisy():
                                 else:
                                     face = face_names[front+1]
 
-                    elif y == 1 and x == 0:
-                        #left side
+
+
+                    elif y == 2 and x == 1:
+                        #Bottom of the face
+                        #F'YR'Y'
                         front = face_names.index(face)
     
                         if front == 3:
+                            right = 0
+        
+                        elif front == 0:
+                            right = 1
+
+                        else:
+                            right = front + 1
+                            
+                        cube.turn_side_anti_clockwise(face)
+                        cube.turn_side_clockwise('yellow')
+                        cube.turn_side_anti_clockwise(right)
+                        cube.turn_side_anti_clockwise('yellow')
+                        print('moved a bottom')
+                        occupied_yellows[face] = True
+                        white_edge_locations = find('w', 'edge')
+
+
+                    elif y == 1 and x == 0:
+                        print('tried to move a left')
+                        #left side
+                        front = face_names.index(face)
+                       
+                        if front == 3: # Green
                             left = 2
-                            back = 1
+
+                        elif front == 2: # Orange
+                            left = 1
+
+                        elif front == 1: # Blue
+                            left = 0
+
+                        else: # front = 0   Red
+                            left = 3
+
+                        count = 0  
+                        for _ in range(4):
+                            if occupied_yellows[face_names[left]] == False:
+                                cube.turn_side_clockwise(face_names[left])
+                                print('moved a left')
+                                occupied_yellows[face_names[left]] = True
+                            else:
+                                left -= 1
+                                count += 1
+                                cube.turn_side_clockwise('yellow')
+                                if left < 0:
+                                    left = 3
+                        for _ in range(count):
+                            cube.turn_side_anti_clockwise('yellow')
+                        white_edge_locations = find('w', 'edge')
+
+
+                    elif y == 1 and x == 1:
+                        front = face_names.index(face)
+                       
+                        if front == 3: # Green
                             right = 0
 
-                        elif front == 2:
-                            left = 1
-                            back = 0
+                        elif front == 2: # Orange
                             right = 3
 
-                        elif front == 1:
-                            left = 0
-                            back = 3
+                        elif front == 1: # Blue
                             right = 2
 
-                        else:
-                            left = 3
-                            back = 2
+                        else: # front = 0   Red
                             right = 1
-                            
-                        if occupied_yellows[face_names[left]] == False:
-                            cube.turn_side_clockwise(face_names[left])
 
-                        else:
-                            solved = False
-                            for i in face_names:
-                                if (occupied_yellows[i] == False and
-                                        solved == False):
-                                    solved = True
-                                    empty_spot = abs(front - face_names.index(i))
-                                    
+                        count = 0    
+                        for _ in range(4):
+                            if occupied_yellows[face_names[right]] == False:
+                                cube.turn_side_anti_clockwise(face_names[right])
+                                print('moved a left')
+                                occupied_yellows[face_names[right]] = True
+                            else:
+                                right += 1
+                                count +=  1
+                                cube.turn_side_anti_clockwise('yellow')
+                                if right > 3:
+                                    right = 0
 
-
-
+                        for _ in range(count):
+                            cube.turn_side_clockwise('yellow')
+                        white_edge_locations = find('w', 'edge')
                         
 
 
-while 1:
-    daisy()
-    if (cube.red[0][1] == 'w' or cube.orange[0][1] == 'w' or
-            cube.blue[0][1] == 'w' or cube.green[0][1] == 'w'):
-       print('found error')
-       break
-    else:
-        out_sides()
-        cube.scramble()
-        print('not found')
+
+
+daisy()
 
 
 
