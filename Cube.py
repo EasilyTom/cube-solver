@@ -143,7 +143,7 @@ class RubiksCube:
             else:
                 RubiksCube.turn_side_anti_clockwise(colours[x])
 
-    def force_sort():
+    def reset():
         white = [['w','w','w'],
                  ['w','w','w'],
                  ['w','w','w']]

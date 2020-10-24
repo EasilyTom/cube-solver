@@ -242,35 +242,38 @@ def daisy():
                     else:
                         perm_turn_yellow()
                         
+    
+def white_cross():
+    
+    def move_up(colour):
+        names = {'r': 'red',
+                 'b': 'blue',
+                 'o': 'orange',
+                 'g': 'green'
+                 }
+        
+        
+        while 1:
+            sides = {'r': cube.red[2][1],
+                     'b': cube.blue[2][1],
+                     'o': cube.orange[2][1],
+                     'g': cube.green[2][1]
+                     }
+            yellows = {'r': cube.yellow[0][1],
+                       'b': cube.yellow[1][2],
+                       'o': cube.yellow[2][1],
+                       'g': cube.yellow[1][0]
+                       }
+            if sides[colour] == colour and yellows[colour] == 'w':
+                cube.turn_side_clockwise(names[colour])
+                cube.turn_side_clockwise(names[colour])
+                break
+            else:
+                cube.turn_side_clockwise('yellow')
+    move_up('r')
+    move_up('b')
+    move_up('o')
+    move_up('g')
 
-for x in range(10000):
-    daisy()
-    if(cube.yellow[0][1] != 'w' or cube.yellow[1][0] != 'w' or
-       cube.yellow[1][2] != 'w' or cube.yellow[2][1] != 'w'):
-        print('error found')
-        break
-    else:
-        print('success', x)
-        cube.scramble()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+daisy()
+white_cross()
