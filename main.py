@@ -8,6 +8,10 @@ def solve():
     white_cross()
     white_corners()
     second_layer()
+    yellow_cross()
+    solve_cross()
+    yellow_corners()
+    yellow_rotations()
     
 def out_sides():
     """Debugging. Print out each face"""
@@ -544,5 +548,258 @@ def second_layer():
         if has_moved == False:
             cube.turn_side_clockwise('yellow')
           
+
+def yellow_cross():
+    def solve_line(front):
+        """Create a cross on the yellow face if there is a line
+            front should be a side that has the line going from left to right
+        """
+        # FRUR'U'F'
+        sides = ['red', 'green', 'orange', 'blue', 'red']
+        right = sides[sides.index(front)+1]
+        cube.turn_side_clockwise(front)
+        cube.turn_side_clockwise(right)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_anti_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
+        cube.turn_side_anti_clockwise(front)
+
+    def solve_L(front):
+        """Create a cross on the yellow face if there is an L shape
+            front should be the side where the yellow edges are on the far
+            and left side
+        """
+        # FURU'R'F'
+        sides = ['red', 'green', 'orange', 'blue', 'red']
+        right = sides[sides.index(front)+1]
+        cube.turn_side_clockwise(front)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
+        cube.turn_side_anti_clockwise(right)
+        cube.turn_side_anti_clockwise(front)
+
+    # Check if the cross is already there
+    if (cube.yellow[0][1] == 'y' and
+            cube.yellow[1][0] == 'y' and
+            cube.yellow[1][2] == 'y'):
+        return
+
+    # Solve it if there's a dot
+    if (cube.yellow[0][1] != 'y' and 
+            cube.yellow[1][0] != 'y' and
+            cube.yellow[1][2] != 'y'):
+        solve_line('green')
+        solve_L('blue')
+        return
+    
+    # Solve if theres anything else
+    if cube.yellow[0][1] == 'y':
+        if cube.yellow[1][0] == 'y':
+            solve_L('orange')
+        elif cube.yellow[1][2] == 'y':
+            solve_L('green')
+        else:
+            solve_line('green')
+    elif cube.yellow[1][2] == 'y':
+        if cube.yellow[1][0] == 'y':
+            solve_line('red')
+        else:
+            solve_L('red')
+    else:
+        solve_L('blue')
+
+
+def solve_cross():
+    def solve_L(front):
+        # RUUR'U'RU'R'U'
+        sides = ['red', 'green', 'orange', 'blue', 'red']
+        right = sides[sides.index(front)+1]
+        cube.turn_side_clockwise(right)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_anti_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
+        cube.turn_side_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
+        cube.turn_side_anti_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
         
+    def solve_opposites(front):
+        sides = ['red', 'green', 'orange', 'blue', 'red', 'green']
+        right = sides[sides.index(front)+1]
+        back = sides[sides.index(front)+2]
+        solve_L(right)
+        cube.turn_side_clockwise('yellow')
+        solve_L(back)
+    
+    while 1: # Rotates the yellow face until it is solveable
+        count = 0
+        if cube.red[2][1] == 'r':
+            count += 1
+        if cube.blue[2][1] == 'b':
+            count += 1
+        if cube.orange[2][1] == 'o':
+            count += 1
+        if cube.green[2][1] == 'g':
+            count += 1
+        
+        if count == 2 :
+            break
+        elif count == 4:
+            return
+        else:
+            cube.turn_side_clockwise('yellow')
+    
+    if cube.red[2][1] == 'r':
+        if cube.blue[2][1] == 'b':
+            solve_L('green')
+        elif cube.green[2][1] == 'g':
+            solve_L('orange')
+        else:
+            solve_opposites('green')
+    elif cube.blue[2][1] == 'b':
+        if cube.orange[2][1] == 'o':
+            solve_L('red')
+        else:
+            solve_opposites('red')
+    else:
+        solve_L('blue')
+        
+
+def yellow_corners():
+    def move_corners(front):
+        # L'URU'LUR'U'
+        sides = ['red', 'green', 'orange', 'blue', 'red', 'blue']
+        right = sides[sides.index(front)+1]
+        left = sides[sides.index(front)-1]
+        cube.turn_side_anti_clockwise(left)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
+        cube.turn_side_clockwise(left)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_anti_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
+    
+    while 1:
+        rb = {cube.yellow[0][2], cube.red[2][2], cube.blue[2][0]}
+        bo = {cube.yellow[2][2], cube.orange[2][0], cube.blue[2][2]}
+        og = {cube.yellow[2][0], cube.orange[2][2], cube.green[2][0]}
+        gr = {cube.yellow[0][0], cube.red[2][0], cube.green[2][2]}
+        if rb == {'r', 'b', 'y'}:
+            if bo == {'o', 'b', 'y'}:
+                return
+            move_corners('blue')
+            bo = {cube.yellow[2][2], cube.orange[2][0], cube.blue[2][2]}
+            if bo == {'o', 'b', 'y'}:
+                return
+            move_corners('blue')
+            return
+    
+        if gr == {'r', 'g', 'y'}:
+            if rb == {'r', 'b', 'y'}:
+                return
+            move_corners('red')
+            rb = {cube.yellow[0][2], cube.red[2][2], cube.blue[2][0]}
+            if rb == {'r', 'b', 'y'}:
+                return
+            move_corners('red')
+            return
+        
+        if og == {'o', 'g', 'y'}:
+            if gr == {'g', 'r', 'y'}:
+                return
+            move_corners('green')
+            gr = {cube.yellow[0][0], cube.red[2][0], cube.green[2][2]}
+            if gr == {'g', 'r', 'y'}:
+                return
+            move_corners('green')
+            return
+    
+        if bo == {'o', 'b', 'y'}:
+            if og == {'g', 'o', 'y'}:
+                return
+            move_corners('orange')
+            og = {cube.yellow[2][0], cube.orange[2][2], cube.green[2][0]}
+            if og == {'g', 'o', 'y'}:
+                return
+            move_corners('orange')
+            return
+        move_corners('red')
+    
+def yellow_rotations():
+    def move(front):
+        # RUUR'U'RU'R'L'UULUL'UL
+        sides = ['red', 'green', 'orange', 'blue', 'red', 'blue']
+        right = sides[sides.index(front)+1]
+        left = sides[sides.index(front)-1]
+        cube.turn_side_clockwise(right)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_anti_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
+        cube.turn_side_clockwise(right)
+        cube.turn_side_anti_clockwise('yellow')
+        cube.turn_side_anti_clockwise(right)
+        cube.turn_side_anti_clockwise(left)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_clockwise(left)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_anti_clockwise(left)
+        cube.turn_side_clockwise('yellow')
+        cube.turn_side_clockwise(left)
+
+    def headlights():
+        if cube.red[2] == ['y', 'r', 'y']:
+            move('blue')
+        if cube.blue[2] == ['y', 'b', 'y']:
+            move('orange')
+        if cube.orange[2] == ['y', 'o', 'y']:
+            move('green')
+        if cube.green[2] == ['y', 'g', 'y']:
+            move('red')
+
+    def perry():
+        if cube.red[2][0] == 'y' and cube.orange[2][2] == 'y':
+            move('red')
+            move('red')
+        if cube.blue[2][0] == 'y' and cube.green[2][2] == 'y':
+            move('blue')
+            move('blue')
+        if cube.orange[2][0] == 'y' and cube.red[2][2] == 'y':
+            move('orange')
+            move('orange')
+        if cube.green[2][0] == 'y' and cube.blue[2][2] == 'y':
+            move('green')
+            move('green')
+
+    headlights()
+    perry()
+
+    while 1:
+        count = 0
+        if cube.yellow[0][0] == 'y':
+            count += 1
+        if cube.yellow[0][2] == 'y':
+            count += 1
+        if cube.yellow[2][0] == 'y':
+            count += 1
+        if cube.yellow[2][2] == 'y':
+            count += 1
+            
+        if count == 1:
+            move('red')
+                
+        if count == 2:
+            if 'y' in cube.red[2]:
+                move('blue')
+            else:
+                move('green')
+        headlights()
+        perry()
+        if cube.check_if_solved():
+            break
+            
 solve()
