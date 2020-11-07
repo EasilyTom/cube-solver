@@ -441,7 +441,7 @@ def second_layer():
     # To move from top to right do URU'R'U'F'UF
     # To move from top to left do U'L'ULUFU'F'
     def to_right(front):
-        sides = ['red', 'blue,' 'orange', 'green', 'red']
+        sides = ['red', 'green', 'orange', 'blue', 'red']
         right = sides[sides.index(front)+1]
         cube.turn_side_clockwise('yellow')
         cube.turn_side_clockwise(right)
@@ -449,12 +449,11 @@ def second_layer():
         cube.turn_side_anti_clockwise(right)
         cube.turn_side_anti_clockwise('yellow')
         cube.turn_side_anti_clockwise(front)
-        cube.turn_side_clockwise(right)
+        cube.turn_side_clockwise('yellow')
         cube.turn_side_clockwise(front)
-        update_corners()
 
     def to_left(front):
-        sides = ['red', 'blue,' 'orange', 'green']
+        sides = ['red', 'green', 'orange', 'blue']
         left = sides[sides.index(front)-1]
         cube.turn_side_anti_clockwise('yellow')
         cube.turn_side_anti_clockwise(left)
@@ -464,72 +463,86 @@ def second_layer():
         cube.turn_side_clockwise(front)
         cube.turn_side_anti_clockwise('yellow')
         cube.turn_side_anti_clockwise(front)
-        update_corners()
         
-    locations = []
-    edges = []
-    def update_corners():
-        nonlocal locations, edges
-        yr = (cube.yellow[0][1], cube.red[2][1])
-        yb = (cube.yellow[1][2], cube.blue[2][1])
-        yo = (cube.yellow[2][1], cube.orange[2][1])
-        yg = (cube.yellow[1][0], cube.green[2][1])
-        rb = (cube.red[1][2], cube.blue[1][0])
-        ob = (cube.orange[1][0], cube.blue[1][2])
-        og = (cube.orange[1][2], cube.green[1][2])
-        rg = (cube.red[1][0], cube.green[1][0])
-        edges = [yr, yb, yo, yg, rb, ob, og, rg]
-                
-    update_corners()
+    
     # First deal with any that are in the right place but wrong way round
     def flip_side(side):
         cube.turn_side_anti_clockwise('yellow')
         to_right(side)
-        ccube.turn_side_anti_clockwise('yellow')
+        cube.turn_side_anti_clockwise('yellow')
         cube.turn_side_anti_clockwise('yellow')
         to_right(side)
         
-    if cube.red[1][2] == 'b' and cube.blue[1][0] == 'r':
-        flip_side('blue')
-    elif cube.blue[1][2] == 'o' and cube.orange[1][0] == 'b':
-        flip_side('orange')
-    elif cube.orange[1][2] == 'g' and cube.green[1][0] == 'o':
-        flip_side('green')
-    elif cube.green[1][2] == 'r' and cube.red[1][0] == 'g':
-        flip_side('red')
-
     while 1:
-        moved = False
-        if edges[0] == ['b','r']:
-            to_left('red')
-            moved = True
-        elif edges[0] == ['g','r']:
-            to_right('red')
-            moved = True
+        if cube.red[1][2] == 'b' and cube.blue[1][0] == 'r':
+            flip_side('blue')
+        elif cube.blue[1][2] == 'o' and cube.orange[1][0] == 'b':
+            flip_side('orange')
+        elif cube.orange[1][2] == 'g' and cube.green[1][0] == 'o':
+            flip_side('green')
+        elif cube.green[1][2] == 'r' and cube.red[1][0] == 'g':
+            flip_side('red')
+        else:
+            break       
 
-        if edges[1] == ['r','b']:
-            to_right('blue')
-            moved = True
-        elif edges[1] == ['o','b']:
-            to_left('blue')
-            moved = True
+    while(cube.red[1] != ['r', 'r', 'r'] or
+              cube.blue[1] != ['b', 'b', 'b'] or
+              cube.orange[1] != ['o', 'o', 'o'] or
+              cube.green[1] != ['g', 'g', 'g']):
 
-        if edges[2] == ['o','b']:
-            to_right('orange')
-            moved = True
-        elif edges[2] ==['o','g']:
-            to_left('orange')
-            moved = True
+        if ((cube.yellow[0][1] == 'y' or cube.red[2][1] == 'y') and
+            (cube.yellow[1][2] == 'y' or cube.blue[2][1] == 'y') and
+            (cube.yellow[1][0] == 'y' or cube.green[2][1] == 'y') and
+            (cube.yellow[2][1] == 'y' or cube.orange[2][1] == 'y')):
 
-        if edges[3] == ['o','g']:
-            to_right('green')
-            moved = True
-        elif edges[3] == ['r','g']:
-            to_left('green')
-            moved = True
+            if cube.red[1][0] != 'r':
+                to_right('red')
+            elif cube.blue[1][0] != 'b':
+                to_right('blue')
+            elif cube.orange[1][0] != 'o':
+                to_right('orange')
+            elif cube.green[1][0] != 'g':
+                to_right('green')
+            else:
+                to_left('red')
+                
+        
+        has_moved = False
 
-        if moved == False:
+        if cube.red[2][1] == 'r':
+            if cube.yellow[0][1] == 'b':
+                to_left('red')
+                has_moved = True
+            elif cube.yellow[0][1] == 'g':
+                to_right('red')
+                has_moved = True
+
+        if cube.blue[2][1] == 'b':
+            if cube.yellow[1][2] == 'o':
+                to_left('blue')
+                has_moved = True
+            elif cube.yellow[1][2] == 'r':
+                to_right('blue')
+                has_moved = True
+
+        if cube.orange[2][1] == 'o':
+            if cube.yellow[2][1] == 'g':
+                to_left('orange')
+                has_moved = True
+            elif cube.yellow[2][1] == 'b':
+                to_right('orange')
+                has_moved = True
+
+        if cube.green[2][1] == 'g':
+            if cube.yellow[1][0] == 'r':
+                to_left('green')
+                has_moved = True
+            elif cube.yellow[1][0] == 'o':
+                to_right('green')
+                has_moved = True
+        
+        if has_moved == False:
             cube.turn_side_clockwise('yellow')
-            print('g')
+          
         
 solve()
