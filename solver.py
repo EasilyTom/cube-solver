@@ -1,6 +1,3 @@
-from cube import RubiksCube
-
-
 def solve(cube):
     daisy(cube)
     white_cross(cube)
