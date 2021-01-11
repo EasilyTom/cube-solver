@@ -55,7 +55,7 @@ class side:
         for x, y in _range_2d(3, 3):
             self.oneD.append(self.colours[x][y])
         
-        i = 0
+        i = 0 # Bad practice need to fix later
         for x, y, z in self.locations:
             cube[x][y][z] = self.oneD[i]
             i += 1
