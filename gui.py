@@ -65,7 +65,7 @@ class model:
                 
     def __init__(self):
         
-        self.LOOP_FRAMES = 500
+        self.LOOP_FRAMES = 100
         self.MOVE_TIME = 0.1
                     
         def create_cubelet(a, b, c):
@@ -218,5 +218,39 @@ class model:
 
 if __name__ == '__main__':
     model = model()
+    
+    print('Testing white')
     model.turn_white()
     model.turn_red()
+    model.turn_red(True)
+    model.turn_white(True)
+
+    print('Testing yellow')
+    model.turn_yellow()
+    model.turn_red()
+    model.turn_red(True)
+    model.turn_yellow(True)
+
+    print('Testing red')
+    model.turn_red()
+    model.turn_white()
+    model.turn_white(True)
+    model.turn_red(True)
+
+    print('Testing orange')
+    model.turn_orange()
+    model.turn_white()
+    model.turn_white(True)
+    model.turn_orange(True)
+
+    print('Testing blue')
+    model.turn_blue()
+    model.turn_red()
+    model.turn_red(True)
+    model.turn_blue(True)
+
+    print('Testing green')
+    model.turn_green()
+    model.turn_red()
+    model.turn_red(True)
+    model.turn_green(True)
