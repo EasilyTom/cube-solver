@@ -46,6 +46,9 @@ class side:
     def rotate_side(self, cube, prime):
         self.oneD = []
         self.colours = self.get_side(cube)
+
+        if self.side in {'yellow', 'orange', 'blue'}:
+            prime = not prime
         
         if prime:
             self.colours =  [list(r) for r in zip(*self.colours[::-1])]
@@ -218,39 +221,3 @@ class model:
 
 if __name__ == '__main__':
     model = model()
-    
-    print('Testing white')
-    model.turn_white()
-    model.turn_red()
-    model.turn_red(True)
-    model.turn_white(True)
-
-    print('Testing yellow')
-    model.turn_yellow()
-    model.turn_red()
-    model.turn_red(True)
-    model.turn_yellow(True)
-
-    print('Testing red')
-    model.turn_red()
-    model.turn_white()
-    model.turn_white(True)
-    model.turn_red(True)
-
-    print('Testing orange')
-    model.turn_orange()
-    model.turn_white()
-    model.turn_white(True)
-    model.turn_orange(True)
-
-    print('Testing blue')
-    model.turn_blue()
-    model.turn_red()
-    model.turn_red(True)
-    model.turn_blue(True)
-
-    print('Testing green')
-    model.turn_green()
-    model.turn_red()
-    model.turn_red(True)
-    model.turn_green(True)
