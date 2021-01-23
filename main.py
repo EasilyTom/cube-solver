@@ -1,9 +1,11 @@
 from solver import solve
 import cube
 import gui
+import time
+cube_model = gui.model()
+cube_array = cube.RubiksCube()
 
-cube_model = gui.model
-cube_array = cube.RubiksCube(cube_model)
+#scramlist = cube_array.scramble()
 
-cube_array.turn_side_clockwise('white')
-cube_array.turn_side_clockwise('red')
+#cube_model.parse(scramlist)
+cube_model.parse('W')
