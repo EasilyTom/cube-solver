@@ -2,43 +2,40 @@ import random
 
 
 class RubiksCube:
-
     def __init__(self):
-        None
+            # Creates  2D arrays for each side
+            #  W
+            # GRBO
+            #  Y
+                          #o
+        self.white = [['w','w','w'],
+                      ['w','w','w'],
+                      ['w','w','w']]
+
+                        #w
+        self.red = [['r','r','r'],
+                    ['r','r','r'],
+                    ['r','r','r']]
+
+                           #w
+        self.orange = [['o','o','o'],
+                       ['o','o','o'],
+                       ['o','o','o']]
         
-        # Creates  2D arrays for each side
-        #  W
-        # GRBO
-        #  Y
-                  #o
-    white = [['w','w','w'],
-             ['w','w','w'],
-             ['w','w','w']]
+                          #w
+        self.green = [['g','g','g'],
+                      ['g','g','g'],
+                      ['g','g','g']]
+        
+                         #w
+        self.blue = [['b','b','b'],
+                     ['b','b','b'],
+                     ['b','b','b']]
 
-                #w
-    red = [['r','r','r'],
-           ['r','r','r'],
-           ['r','r','r']]
-
-                   #w
-    orange = [['o','o','o'],
-              ['o','o','o'],
-              ['o','o','o']]
-    
-                  #w
-    green = [['g','g','g'],
-             ['g','g','g'],
-             ['g','g','g']]
-    
-                 #w
-    blue = [['b','b','b'],
-            ['b','b','b'],
-            ['b','b','b']]
-
-                   #r
-    yellow = [['y','y','y'],
-              ['y','y','y'],
-              ['y','y','y']]
+                           #r
+        self.yellow = [['y','y','y'],
+                       ['y','y','y'],
+                       ['y','y','y']]
 
     def turn_side_clockwise(self, side):
         """Turn a side in the clockwise direction"""
@@ -116,8 +113,8 @@ class RubiksCube:
 
     def check_if_solved(self):
         """Check if the cube is in a solved state"""
-        for x in range(0,3):
-            for y in range (0,3):
+        for x in range(3):
+            for y in range (3):
                 if (
                         self.white[x][y] != 'w' or
                         self.yellow[x][y] != 'y' or
@@ -131,11 +128,15 @@ class RubiksCube:
 
     def scramble(self):
         """Randomise the cube"""
+        moves = []
         colours = ['white', 'white', 'yellow', 'yellow', 'red', 'red',
                    'orange', 'orange', 'blue', 'blue', 'green', 'green']
         for _ in range(random.randint(80,120)):
             x = random.randint(0,11) # Even moves clockwise odd moves anti           
             if x % 2 == 0:
                 self.turn_side_clockwise(colours[x])
+                moves.append(colours[x][0].upper())
             else:
                 self.turn_side_anti_clockwise(colours[x])
+                moves.append(colours[x][0].lower())
+        return moves
