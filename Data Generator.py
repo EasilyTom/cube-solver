@@ -3,10 +3,18 @@ from os import mkdir
 import random
 import csv
 
+def _range(x=1, y=1, z=1):
+    for _x in range(x):
+        for _y in range(y):
+            for _z in range(z):
+                yield _x, _y, _z
+
+
+    
 class TestCase:
     def __init__(self, complexity):
         self.cubearr = RubiksCube()
-        self.truemoves = []
+        self.truemoves = ''
 
         for _ in range(complexity):
             COLOURS = ['white', 'white', 'yellow', 'yellow', 'red', 'red',
@@ -14,10 +22,10 @@ class TestCase:
             x = random.randint(0, 11)
             if x % 2 == 0:
                 self.cubearr.turn_side_clockwise(COLOURS[x])
-                self.truemoves.append(COLOURS[x][0].upper())
+                self.truemoves += COLOURS[x][0].upper()
             else:
                 self.cubearr.turn_side_anti_clockwise(COLOURS[x])
-                self.truemoves.append(COLOURS[x][0].lower())
+                self.truemoves += COLOURS[x][0].lower()
 
     def get_moves(self):
         return self.truemoves[::-1]
@@ -27,14 +35,17 @@ class TestCase:
 
     def get_data(self):
         """Returns touple of 2D arrays ordered WYROBG"""
-        data = (self.cubearr.white, self.cubearr.yellow, self.cubearr.red,
+        sides = (self.cubearr.white, self.cubearr.yellow, self.cubearr.red,
                 self.cubearr.orange, self.cubearr.blue, self.cubearr.green)
+        data = ''
+        for x, y, z in _range(6, 3, 3):
+            data += sides[x][y][z]
         return data
 
 
 # ID, TrueMoves, White, Yellow, Red, Orange, Blue, Green
 def create_data():
-    NUM_OF_ENTRIES = 100000
+    NUM_OF_ENTRIES = 10000
 
     try:
         print('Attempting to make data folder')
@@ -47,7 +58,7 @@ def create_data():
         case = TestCase(complexity)
         moves = case.get_moves()
         sides = case.get_data()
-        data = [str(num), moves, sides]
+        data = [num, moves, sides]
         name = ('data/test_data_' + str(complexity) + '.csv')
         with open(name, "a", newline='') as file:
             writer = csv.writer(file)

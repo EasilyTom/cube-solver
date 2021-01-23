@@ -4,7 +4,7 @@ import random
 class RubiksCube:
 
     def __init__(self):
-        None
+        pass
         
         # Creates  2D arrays for each side
         #  W
@@ -116,8 +116,8 @@ class RubiksCube:
 
     def check_if_solved(self):
         """Check if the cube is in a solved state"""
-        for x in range(0,3):
-            for y in range (0,3):
+        for x in range(3):
+            for y in range (3):
                 if (
                         self.white[x][y] != 'w' or
                         self.yellow[x][y] != 'y' or
