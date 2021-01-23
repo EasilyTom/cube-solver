@@ -1,5 +1,5 @@
 import vpython as vpy
-from time import sleep    
+import time    
                 
         
 def _range_2d(xrange, yrange):
@@ -46,6 +46,9 @@ class side:
     def rotate_side(self, cube, prime):
         self.oneD = []
         self.colours = self.get_side(cube)
+
+        if self.side in {'yellow', 'orange', 'blue'}:
+            prime = not prime
         
         if prime:
             self.colours =  [list(r) for r in zip(*self.colours[::-1])]
@@ -55,7 +58,7 @@ class side:
         for x, y in _range_2d(3, 3):
             self.oneD.append(self.colours[x][y])
         
-        i = 0 # Bad practice need to fix later
+        i = 0
         for x, y, z in self.locations:
             cube[x][y][z] = self.oneD[i]
             i += 1
@@ -65,7 +68,7 @@ class model:
                 
     def __init__(self):
         
-        self.LOOP_FRAMES = 500
+        self.LOOP_FRAMES = 200
         self.MOVE_TIME = 0.1
                     
         def create_cubelet(a, b, c):
@@ -126,12 +129,14 @@ class model:
             direction = -90
             
         for _ in range(self.LOOP_FRAMES):
+            start = time.time()
             for x, z in _range_2d(3, 3):
                 active = self.cube_model[x][2][z]
                 active.rotate(angle=vpy.radians(direction/self.LOOP_FRAMES),
                               axis=vpy.vector(0,1,0),
                               origin=vpy.vector(1.05,1.55,1.55))
-            sleep(self.MOVE_TIME/self.LOOP_FRAMES)
+            time.sleep(self.MOVE_TIME/self.LOOP_FRAMES)
+            print(time.time() - start)
             
         self.cube_model = self.white.rotate_side(self.cube_model, prime)
         
@@ -147,7 +152,7 @@ class model:
                 active.rotate(angle=vpy.radians(direction/self.LOOP_FRAMES),
                               axis=vpy.vector(1,0,0),
                               origin=vpy.vector(-0.5,1.05,1.55))
-            sleep(self.MOVE_TIME/self.LOOP_FRAMES)
+            time.sleep(self.MOVE_TIME/self.LOOP_FRAMES)
 
         self.cube_model = self.red.rotate_side(self.cube_model, prime)
             
@@ -163,7 +168,7 @@ class model:
                 active.rotate(angle=vpy.radians(direction/self.LOOP_FRAMES),
                               axis=vpy.vector(0,0,1),
                               origin=vpy.vector(1.05,1.05,1.05))
-            sleep(self.MOVE_TIME/self.LOOP_FRAMES)
+            time.sleep(self.MOVE_TIME/self.LOOP_FRAMES)
 
         self.cube_model = self.blue.rotate_side(self.cube_model, prime)
         
@@ -179,7 +184,7 @@ class model:
                 active.rotate(angle=vpy.radians(direction/self.LOOP_FRAMES),
                               axis=vpy.vector(1,0,0),
                               origin=vpy.vector(-0.5,1.05,1.55))
-            sleep(self.MOVE_TIME/self.LOOP_FRAMES)
+            time.sleep(self.MOVE_TIME/self.LOOP_FRAMES)
 
         self.cube_model = self.orange.rotate_side(self.cube_model, prime)
 
@@ -195,7 +200,7 @@ class model:
                 active.rotate(angle=vpy.radians(direction/self.LOOP_FRAMES),
                               axis=vpy.vector(0,0,1),
                               origin=vpy.vector(1.05,1.05,1.05))
-            sleep(self.MOVE_TIME/self.LOOP_FRAMES)
+            time.sleep(self.MOVE_TIME/self.LOOP_FRAMES)
 
         self.cube_model = self.green.rotate_side(self.cube_model, prime)
 
@@ -211,12 +216,23 @@ class model:
                 active.rotate(angle=vpy.radians(direction/self.LOOP_FRAMES),
                               axis=vpy.vector(0,1,0),
                               origin=vpy.vector(1.05,1.55,1.55))
-            sleep(self.MOVE_TIME/self.LOOP_FRAMES)
+            time.sleep(self.MOVE_TIME/self.LOOP_FRAMES)
 
         self.cube_model = self.yellow.rotate_side(self.cube_model, prime)
 
-
+    def parse(self, movelist):
+        """Execute a series of moves"""
+        MOVES = {'W': self.turn_white,
+                 'Y': self.turn_yellow,
+                 'R': self.turn_red,
+                 'O': self.turn_orange,
+                 'B': self.turn_blue,
+                 'G': self.turn_green,
+            }
+        for move in movelist:
+            MOVES[move.upper()](False if move.isupper() else True)
+        
 if __name__ == '__main__':
     model = model()
-    model.turn_white()
-    model.turn_red()
+    model.parse('WwRYyr')
+    
