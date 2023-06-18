@@ -1,6 +1,6 @@
 import multiprocessing as mp
 
-def hash_(cube):
+def hash(cube):
     '''Given a CubeClass.Cube object, create the 3 hash values of it
         Returns the hashes as a touple (corners, first, second)'''
     return (_hash_corners(cube[0]),
@@ -13,13 +13,9 @@ def _hash_corners(val):
     val = val[:-1]
 
     # First the orientation of each corner is dealt with
-    second_half = ''
-    for x in val:
-        second_half += str(x[1] // 2)
-        # each corner can only face 3 directions so //2 to account for that
-
-    index = int(second_half, base=3)
-
+    second_half_2 = 0
+    for i, x in enumerate(val):
+        second_half_2 += x[1] * (3**(6-i))
     # Then the permutation
     bitset = [0, 1, 2, 3, 4, 5, 6, 7]
     def get_num(i):
@@ -78,7 +74,7 @@ if __name__ == '__main__':
 
     import time
     s = time.time()
-    
-    for _ in range(1000000):
-        hash_(cube)
+
+    for _ in range(100):
+        hash(cube)
     print(time.time()-s)
